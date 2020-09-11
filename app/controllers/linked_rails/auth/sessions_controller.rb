@@ -21,6 +21,16 @@ module LinkedRails
         end
       end
 
+      def destroy_execute
+        sign_out
+      end
+
+      def destroy_success
+        respond_with_redirect(
+          location: '/'
+        )
+      end
+
       def new_resource_params
         params.permit(:redirect_url)
       end

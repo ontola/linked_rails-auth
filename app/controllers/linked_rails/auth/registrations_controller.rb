@@ -27,6 +27,14 @@ module LinkedRails
         current_resource.redirect_url
       end
 
+      def index_collection; end
+
+      def new_resource
+        return super unless action_name == 'create'
+
+        build_resource
+      end
+
       class << self
         def controller_class
           LinkedRails.registration_class

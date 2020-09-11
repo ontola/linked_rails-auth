@@ -14,6 +14,10 @@ module LinkedRails
         def iri_namespace
           Vocab::ONTOLA
         end
+
+        def iri_template
+          LinkedRails.user_class.iri_template
+        end
       end
     end
   end

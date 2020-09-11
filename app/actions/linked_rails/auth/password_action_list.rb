@@ -23,8 +23,9 @@ module LinkedRails
         :update,
         update_options.merge(
           include_object: true,
+          label: nil,
           root_relative_iri: lambda {
-            LinkedRails.iri(
+            RDF::URI(
               path: '/users/password/edit',
               query: {reset_password_token: resource.reset_password_token}.to_param
             )

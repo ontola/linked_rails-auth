@@ -5,6 +5,7 @@ module LinkedRails
     class Session < LinkedRails::Resource
       enhance LinkedRails::Enhancements::Actionable
       enhance LinkedRails::Enhancements::Creatable
+      enhance LinkedRails::Enhancements::Destroyable
 
       attr_accessor :email, :redirect_url
 

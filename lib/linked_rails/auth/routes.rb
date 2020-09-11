@@ -14,7 +14,7 @@ module LinkedRails
         unlocks: 'linked_rails/auth/unlocks'
       }.freeze
 
-      def use_linked_rails_auth(opts = {})
+      def use_linked_rails_auth(opts = {}) # rubocop:disable Metrics/MethodLength
         linked_rails_doorkeeper_routes(opts)
         linked_rails_device_routes(opts)
 
@@ -24,6 +24,8 @@ module LinkedRails
         scope 'u' do
           post 'sessions', to: "#{sessions_controller}#create"
           get 'sign_in', to: "#{sessions_controller}#new"
+          get 'sign_out', to: "#{sessions_controller}#destroy"
+          delete 'sign_out', to: "#{sessions_controller}#destroy"
           get 'access_tokens/new', to: "#{tokens_controller}#new"
         end
       end
