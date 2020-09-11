@@ -2,7 +2,6 @@
 
 require 'linked_rails/auth/engine'
 require 'linked_rails/auth/routes'
-require 'linked_rails/auth/jwt_helper'
 require 'linked_rails/auth/auth_helper'
 
 module LinkedRails

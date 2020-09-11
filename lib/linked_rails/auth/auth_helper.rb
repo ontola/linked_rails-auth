@@ -3,7 +3,6 @@
 module LinkedRails
   module Auth
     module AuthHelper
-      include LinkedRails::Auth::JWTHelper
       include Doorkeeper::Rails::Helpers
       include Doorkeeper::Helpers::Controller
 
@@ -31,7 +30,12 @@ module LinkedRails
       end
 
       def doorkeeper_token_payload
-        @doorkeeper_token_payload ||= decode_token(doorkeeper_token.token)
+        @doorkeeper_token_payload ||= JWT.decode(
+          doorkeeper_token.token,
+          Doorkeeper::JWT.configuration.secret_key,
+          true,
+          algorithms: %w[HS256 HS512]
+        )[0]
       end
 
       def doorkeeper_unauthorized_render_options(error: nil)
