@@ -6,7 +6,7 @@ module LinkedRails
       def create
         headers.merge!(authorize_response.headers)
 
-        update_oauth_token(authorize_response.token) if authorize_response.status == :ok
+        create_success_effects if authorize_response.status == :ok
 
         render json: authorize_response.body, status: authorize_response.status
       rescue Doorkeeper::Errors::DoorkeeperError => e
@@ -14,6 +14,12 @@ module LinkedRails
       end
 
       private
+
+      def create_success_effects
+        update_oauth_token(authorize_response.token)
+
+        response.headers['Location'] = redirect_url_param if redirect_url_param
+      end
 
       def handle_token_exception(exception)
         active_response_block do
@@ -47,6 +53,10 @@ module LinkedRails
             "unhandled login state #{request.env['warden'].message}"
           end
         )
+      end
+
+      def redirect_url_param
+        params[:access_token].try(:[], :redirect_url) || params[:redirect_url]
       end
 
       def token_with_errors(exception)
