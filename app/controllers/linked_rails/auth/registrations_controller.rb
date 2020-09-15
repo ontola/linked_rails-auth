@@ -19,8 +19,8 @@ module LinkedRails
       def active_response_success_message; end
 
       def create_success
-        super
         sign_in(current_resource)
+        super
       end
 
       def create_success_location
