@@ -48,8 +48,6 @@ module LinkedRails
       end
 
       def generate_access_token(resource_owner)
-        doorkeeper_token.revoke if doorkeeper_token&.resource_owner_id
-
         Doorkeeper::AccessToken.find_or_create_for(
           application: doorkeeper_token&.application,
           resource_owner: resource_owner,
@@ -73,6 +71,7 @@ module LinkedRails
       def sign_out(*args)
         super
 
+        doorkeeper_token.revoke if doorkeeper_token&.resource_owner_id
         update_oauth_token(generate_access_token(create_guest_user))
       end
 
