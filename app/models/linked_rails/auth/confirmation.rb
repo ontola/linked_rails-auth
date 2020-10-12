@@ -7,6 +7,10 @@ module LinkedRails
       enhance LinkedRails::Enhancements::Creatable
       attr_accessor :current_user, :email, :token, :user, :password_token
 
+      def anonymous_iri?
+        token.blank?
+      end
+
       def confirm!
         user&.confirm
       end
