@@ -4,14 +4,24 @@ module LinkedRails
   module Auth
     class ConfirmationsController < Devise::ConfirmationsController
       include AuthHelper
-      before_action :head_200, only: :show
-      before_action :login_user, only: :show
-      active_response :new, :show
+      active_response :new, :show, :update
 
       private
 
+      def after_confirmation_path_for(_resource_name, _resource)
+        if current_user.guest?
+          LinkedRails.iri(path: '/u/sign_in').path
+        else
+          LinkedRails.iri.path
+        end
+      end
+
       def after_resending_confirmation_instructions_path_for(_resource_name)
         LinkedRails.iri(path: '/u/sign_in').path
+      end
+
+      def already_confirmed_notice
+        I18n.t('errors.messages.already_confirmed')
       end
 
       def create_execute
@@ -25,19 +35,6 @@ module LinkedRails
 
       def create_success_message
         find_message(:send_instructions)
-      end
-
-      def head_200
-        head 200 if request.head?
-      end
-
-      def login_user
-        return if current_user == current_resource.user
-
-        sign_in current_resource.user
-        active_response_block do
-          respond_with_resource(resource: current_resource.user)
-        end
       end
 
       def new_resource
@@ -54,28 +51,42 @@ module LinkedRails
       end
 
       def requested_resource
-        LinkedRails.confirmation_class.new(
-          current_user: current_user,
-          email: user_by_token.email,
-          user: user_by_token || raise(ActiveRecord::RecordNotFound),
-          token: original_token
-        )
+        @requested_resource ||=
+          LinkedRails.confirmation_class.new(
+            current_user: current_user,
+            email: user_by_token&.email,
+            user: user_by_token || raise(ActiveRecord::RecordNotFound),
+            token: original_token
+          )
       end
 
-      def show_execute
+      def show_includes
+        %i[entry_point]
+      end
+
+      def show_success
+        return super unless current_resource.confirmed?
+
+        add_exec_action_header(response.headers, ontola_redirect_action(redirect_location))
+        add_exec_action_header(response.headers, ontola_snackbar_action(already_confirmed_notice))
+
+        super
+      end
+
+      def update_execute
         current_resource.confirm!
       end
 
-      def show_failure
+      def update_failure
         respond_with_resource(
           resource: current_resource,
           notice: user_by_token.errors.full_messages.first
         )
       end
 
-      def show_success
-        respond_with_resource(
-          resource: current_resource,
+      def update_success
+        respond_with_redirect(
+          location: after_confirmation_path_for(resource_name, current_resource),
           notice: find_message(:confirmed)
         )
       end

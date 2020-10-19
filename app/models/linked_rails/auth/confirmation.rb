@@ -5,6 +5,7 @@ module LinkedRails
     class Confirmation < LinkedRails::Resource
       enhance LinkedRails::Enhancements::Actionable
       enhance LinkedRails::Enhancements::Creatable
+      enhance LinkedRails::Enhancements::Updatable
       attr_accessor :current_user, :email, :token, :user, :password_token
 
       def anonymous_iri?
@@ -15,14 +16,39 @@ module LinkedRails
         user&.confirm
       end
 
+      def confirmed?
+        user&.confirmed?
+      end
+
+      def description
+        I18n.t('actions.confirmations.update.description', default: nil)
+      end
+
+      def entry_point
+        @entry_point ||= LinkedRails::EntryPoint.new(
+          parent: self,
+          url: iri
+        )
+      end
+
+      def form; end
+
+      def http_method
+        :PUT
+      end
+
+      def image; end
+
       def iri_opts
         {confirmation_token: token}
       end
 
       def redirect_url
-        return if current_user != user
-
         LinkedRails.iri
+      end
+
+      def submit_label
+        I18n.t('actions.confirmations.update.submit', default: 'Confirm')
       end
 
       private

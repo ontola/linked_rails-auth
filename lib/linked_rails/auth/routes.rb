@@ -15,11 +15,12 @@ module LinkedRails
       }.freeze
 
       def use_linked_rails_auth(opts = {}) # rubocop:disable Metrics/MethodLength
-        linked_rails_doorkeeper_routes(opts)
-        linked_rails_device_routes(opts)
-
         sessions_controller = opts[:sessions] || LINKED_RAILS_CONTROLLERS[:sessions]
         tokens_controller = opts[:tokens] || LINKED_RAILS_CONTROLLERS[:tokens]
+        confirmations_controller = opts[:confirmations] || LINKED_RAILS_CONTROLLERS[:confirmations]
+
+        linked_rails_doorkeeper_routes(opts)
+        linked_rails_device_routes(opts, confirmations_controller)
 
         scope 'u' do
           post 'sessions', to: "#{sessions_controller}#create"
@@ -32,7 +33,7 @@ module LinkedRails
 
       private
 
-      def linked_rails_device_routes(opts)
+      def linked_rails_device_routes(opts, confirmations_controller)
         devise_controllers = DEVISE_CONTROLLERS.map do |controller|
           if opts.key?(controller)
             [controller, opts[controller]]
@@ -42,6 +43,10 @@ module LinkedRails
         end.compact
 
         devise_for :users, controllers: Hash[devise_controllers], skip: :sessions
+
+        devise_scope :user do
+          put 'users/confirmation', to: "#{confirmations_controller}#update"
+        end
       end
 
       def linked_rails_doorkeeper_routes(opts)
