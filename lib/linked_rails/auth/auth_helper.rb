@@ -65,7 +65,10 @@ module LinkedRails
       def sign_in(resource, *_args)
         @current_user = resource
         update_oauth_token(generate_access_token(resource))
-        warden.set_user(resource, scope: :user, store: false) unless warden.user(:user) == resource
+
+        return if request.env['warden'].blank? || warden.user(:user) == resource
+
+        warden.set_user(resource, scope: :user, store: false)
       end
 
       def sign_out(*args)
