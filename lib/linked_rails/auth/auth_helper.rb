@@ -80,8 +80,12 @@ module LinkedRails
         response.headers['New-Authorization'] = token.token
       end
 
+      def require_doorkeeper_token?
+        UNSAFE_METHODS.include?(request.method)
+      end
+
       def valid_token?
-        return SAFE_METHODS.include?(request.method) if doorkeeper_token.blank?
+        return !require_doorkeeper_token? if doorkeeper_token.blank?
 
         doorkeeper_token&.accessible?
       end
