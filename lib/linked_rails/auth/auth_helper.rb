@@ -10,6 +10,7 @@ module LinkedRails
       UNSAFE_METHODS = %w[POST PUT PATCH DELETE].freeze
 
       def current_user
+        return request.env['Current-User'] if request.env['Current-User']
         return @current_user if instance_variable_defined?(:@current_user)
 
         @current_user ||= current_resource_owner || create_guest_user
@@ -17,6 +18,10 @@ module LinkedRails
         handle_invalid_token unless valid_token?
 
         @current_user
+      end
+
+      def doorkeeper_token
+        request.env['Doorkeeper-Token'] || super
       end
 
       private
