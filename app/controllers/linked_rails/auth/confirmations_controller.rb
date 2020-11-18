@@ -24,9 +24,17 @@ module LinkedRails
         I18n.t('errors.messages.already_confirmed')
       end
 
+      def create_failure_message
+        current_resource.errors.full_messages.join("\n")
+      end
+
       def create_execute
-        resource = resource_class.send_confirmation_instructions(resource_params)
-        successfully_sent?(resource)
+        var = :"@#{controller_name.singularize}"
+        instance_variable_set(
+          var,
+          resource_class.send_confirmation_instructions(resource_params)
+        )
+        successfully_sent?(current_resource)
       end
 
       def create_success_location
@@ -67,7 +75,7 @@ module LinkedRails
       def show_success
         return super unless current_resource.confirmed?
 
-        add_exec_action_header(response.headers, ontola_redirect_action(redirect_location))
+        add_exec_action_header(response.headers, ontola_redirect_action(current_resource.redirect_url))
         add_exec_action_header(response.headers, ontola_snackbar_action(already_confirmed_notice))
 
         super
