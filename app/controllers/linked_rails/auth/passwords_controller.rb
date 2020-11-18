@@ -49,6 +49,10 @@ module LinkedRails
         self.resource = resource_class.new
       end
 
+      def new_session_path(*_args)
+        LinkedRails.iri(path: 'u/sign_in').path
+      end
+
       def resource_params
         params.fetch(resource_name, nil) ||
           params.fetch(controller_name.singularize, {})
