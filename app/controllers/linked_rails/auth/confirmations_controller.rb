@@ -25,7 +25,7 @@ module LinkedRails
       end
 
       def create_failure_message
-        current_resource.errors.full_messages.join("\n")
+        current_resource!.errors.full_messages.join("\n")
       end
 
       def create_execute
@@ -34,7 +34,7 @@ module LinkedRails
           var,
           resource_class.send_confirmation_instructions(resource_params)
         )
-        successfully_sent?(current_resource)
+        successfully_sent?(current_resource!)
       end
 
       def create_success_location
@@ -59,11 +59,13 @@ module LinkedRails
       end
 
       def requested_resource
+        return if user_by_token.blank?
+
         @requested_resource ||=
           LinkedRails.confirmation_class.new(
             current_user: current_user,
             email: user_by_token&.email,
-            user: user_by_token || raise(ActiveRecord::RecordNotFound),
+            user: user_by_token,
             token: original_token
           )
       end
@@ -73,28 +75,28 @@ module LinkedRails
       end
 
       def show_success
-        return super unless current_resource.confirmed?
+        return super unless current_resource!.confirmed?
 
-        add_exec_action_header(response.headers, ontola_redirect_action(current_resource.redirect_url))
+        add_exec_action_header(response.headers, ontola_redirect_action(current_resource!.redirect_url))
         add_exec_action_header(response.headers, ontola_snackbar_action(already_confirmed_notice))
 
         super
       end
 
       def update_execute
-        current_resource.confirm!
+        current_resource!.confirm!
       end
 
       def update_failure
         respond_with_redirect(
-          location: after_confirmation_path_for(resource_name, current_resource),
+          location: after_confirmation_path_for(resource_name, current_resource!),
           notice: user_by_token.errors.full_messages.first
         )
       end
 
       def update_success
         respond_with_redirect(
-          location: after_confirmation_path_for(resource_name, current_resource),
+          location: after_confirmation_path_for(resource_name, current_resource!),
           notice: find_message(:confirmed)
         )
       end
