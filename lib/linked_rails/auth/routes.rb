@@ -42,9 +42,9 @@ module LinkedRails
           end
         end.compact
 
-        devise_for :users, controllers: Hash[devise_controllers], skip: :sessions
+        devise_for opts[:devise_scope] || :users, path: :users, controllers: Hash[devise_controllers], skip: :sessions
 
-        devise_scope :user do
+        devise_scope opts[:devise_scope] || :users do
           put 'users/confirmation', to: "#{confirmations_controller}#update"
         end
       end
