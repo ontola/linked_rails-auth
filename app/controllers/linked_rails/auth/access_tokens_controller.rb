@@ -16,8 +16,21 @@ module LinkedRails
       private
 
       def create_success_effects
-        update_oauth_token(authorize_response.token)
+        if enter_otp? && !strategy.is_a?(Doorkeeper::Request::RefreshToken)
+          redirect_to_otp_attempt
+        elsif !otp_activated? && otp_setup_required? && !strategy.is_a?(Doorkeeper::Request::RefreshToken)
+          redirect_to_otp_secret
+        else
+          handle_new_token
+        end
+      end
 
+      def enter_otp?
+        otp_activated?
+      end
+
+      def handle_new_token
+        update_oauth_token(authorize_response.token)
         response.headers['Location'] = redirect_url_param if redirect_url_param
       end
 
@@ -33,12 +46,54 @@ module LinkedRails
       end
 
       def handle_token_exception_json(exception) # rubocop:disable Metrics/AbcSize
-        error = get_error_response_from_exception(exception)
-        headers.merge!(error.headers)
-        Bugsnag.notify(exception)
-        Rails.logger.info(error.body.merge(code: error_id(exception)).to_json)
-        self.response_body = error.body.merge(code: error_id(exception)).to_json
-        self.status = error.status
+      error = get_error_response_from_exception(exception)
+      headers.merge!(error.headers)
+      Bugsnag.notify(exception)
+      Rails.logger.info(error.body.merge(code: error_id(exception)).to_json)
+      self.response_body = error.body.merge(code: error_id(exception)).to_json
+      self.status = error.status
+      end
+
+      def otp_activated?
+        @otp_activated ||=
+          LinkedRails.otp_secret_class.exists?(
+            user_id: authorize_response.token.resource_owner_id,
+            active: true
+          )
+      end
+
+      def otp_attempt_form_iri
+        LinkedRails.iri(path: 'u/otp_attempts/new', query: {session: session_param}.to_param)
+      end
+
+      def otp_secret_form_iri
+        LinkedRails.iri(path: 'u/otp_secrets/new', query: {session: session_param}.to_param)
+      end
+
+      def otp_setup_required?
+        false
+      end
+
+      def redirect_to_otp_attempt
+        response.headers['Location'] = otp_attempt_form_iri.to_s
+        @authorize_response = Doorkeeper::OAuth::TokenResponse.new(Doorkeeper::AccessToken.new)
+      end
+
+      def redirect_to_otp_secret
+        response.headers['Location'] = otp_secret_form_iri.to_s
+        @authorize_response = Doorkeeper::OAuth::TokenResponse.new(Doorkeeper::AccessToken.new)
+      end
+
+      def session_param
+        sign_payload(
+          exp: 10.minutes.from_now.to_i,
+          user_id: authorize_response.token.resource_owner_id,
+          redirect_uri: redirect_url_param
+        )
+      end
+
+      def sign_payload(payload)
+        JWT.encode(payload, ENV['JWT_ENCRYPTION_TOKEN'])
       end
 
       def raise_login_error(request) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
