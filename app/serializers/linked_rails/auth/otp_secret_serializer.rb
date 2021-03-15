@@ -8,6 +8,7 @@ module LinkedRails
                 datatype: RDF::XSD[:integer],
                 if: method(:never)
       attribute :active, predicate: LinkedRails.app_ns[:otpActive]
+      has_one :image, predicate: NS::SCHEMA.image
     end
   end
 end

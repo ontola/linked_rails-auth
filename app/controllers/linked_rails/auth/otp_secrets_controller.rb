@@ -34,13 +34,15 @@ module LinkedRails
 
       def delete_success_options
         super.merge(
-          meta: [
-            RDF::Statement.new(
-              LinkedRails.iri(path: '/u/otp_secrets/delete'),
-              RDF::OWL.sameAs,
-              LinkedRails.iri(path: "#{current_resource.iri.path}/delete"),
-            )
-          ]
+          meta: [same_as_statement]
+        )
+      end
+      
+      def same_as_statement
+        RDF::Statement.new(
+          LinkedRails.iri(path: '/u/otp_secrets/delete'),
+          RDF::OWL.sameAs,
+          LinkedRails.iri(path: "#{current_resource.iri.path}/delete"),
         )
       end
 
