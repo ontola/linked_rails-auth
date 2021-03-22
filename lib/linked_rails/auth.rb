@@ -5,7 +5,9 @@ require 'linked_rails/auth/routes'
 require 'linked_rails/auth/auth_helper'
 
 module LinkedRails
-  module Auth; end
+  module Auth
+    mattr_accessor :otp_drift, default: 60
+  end
 end
 
 LinkedRails.configurable_class(nil, :user, default: 'User')

@@ -50,7 +50,7 @@ module LinkedRails
       end
 
       def validate_otp_attempt
-        return if persisted? && authenticate_otp(otp_attempt, drift: 60)
+        return if persisted? && authenticate_otp(otp_attempt, drift: LinkedRails::Auth.otp_drift)
 
         errors.add(:otp_attempt, I18n.t('messages.otp_secrets.invalid'))
       end

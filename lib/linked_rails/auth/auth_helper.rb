@@ -39,7 +39,7 @@ module LinkedRails
           doorkeeper_token.token,
           Doorkeeper::JWT.configuration.secret_key,
           true,
-          algorithms: %w[HS256 HS512]
+          algorithms: [Doorkeeper::JWT.configuration.encryption_method.to_s.upcase]
         )[0]
       end
 

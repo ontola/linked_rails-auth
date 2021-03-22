@@ -93,7 +93,11 @@ module LinkedRails
       end
 
       def sign_payload(payload)
-        JWT.encode(payload, ENV['JWT_ENCRYPTION_TOKEN'])
+        JWT.encode(
+          payload,
+          Doorkeeper::JWT.configuration.secret_key,
+          Doorkeeper::JWT.configuration.encryption_method.to_s.upcase
+        )
       end
 
       def raise_login_error(request) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength

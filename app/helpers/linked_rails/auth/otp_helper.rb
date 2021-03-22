@@ -10,9 +10,9 @@ module LinkedRails
 
         @session_from_param ||= JWT.decode(
           session_param,
-          ENV['JWT_ENCRYPTION_TOKEN'],
+          Doorkeeper::JWT.configuration.secret_key,
           true,
-          algorithms: %w[HS256 HS512]
+          algorithms: [Doorkeeper::JWT.configuration.encryption_method.to_s.upcase]
         ).first || {}
       rescue JWT::ExpiredSignature
         handle_expired_session
