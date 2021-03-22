@@ -56,7 +56,7 @@ module LinkedRails
 
         devise_for opts[:devise_scope] || :users, path: :users, controllers: Hash[devise_controllers], skip: :sessions
 
-        devise_scope opts[:devise_scope] || :users do
+        devise_scope opts[:devise_scope]&.to_s&.singularize&.to_sym || :user do
           put 'users/confirmation', to: "#{confirmations_controller}#update"
         end
       end

@@ -46,12 +46,12 @@ module LinkedRails
       end
 
       def handle_token_exception_json(exception) # rubocop:disable Metrics/AbcSize
-      error = get_error_response_from_exception(exception)
-      headers.merge!(error.headers)
-      Bugsnag.notify(exception)
-      Rails.logger.info(error.body.merge(code: error_id(exception)).to_json)
-      self.response_body = error.body.merge(code: error_id(exception)).to_json
-      self.status = error.status
+        error = get_error_response_from_exception(exception)
+        headers.merge!(error.headers)
+        Bugsnag.notify(exception)
+        Rails.logger.info(error.body.merge(code: error_id(exception)).to_json)
+        self.response_body = error.body.merge(code: error_id(exception)).to_json
+        self.status = error.status
       end
 
       def otp_activated?

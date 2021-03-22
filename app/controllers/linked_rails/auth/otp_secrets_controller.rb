@@ -37,12 +37,12 @@ module LinkedRails
           meta: [same_as_statement]
         )
       end
-      
+
       def same_as_statement
         RDF::Statement.new(
           LinkedRails.iri(path: '/u/otp_secrets/delete'),
           RDF::OWL.sameAs,
-          LinkedRails.iri(path: "#{current_resource.iri.path}/delete"),
+          LinkedRails.iri(path: "#{current_resource.iri.path}/delete")
         )
       end
 

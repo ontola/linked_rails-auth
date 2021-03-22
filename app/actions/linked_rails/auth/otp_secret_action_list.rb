@@ -9,16 +9,16 @@ module LinkedRails
           collection: false,
           type: RDF::Vocab::SCHEMA[:CreateAction],
           include_object: true,
-          url: -> {
+          url: lambda {
             LinkedRails.iri(
               path: 'u/otp_secrets',
-              query: {session: resource.session}.compact.to_param.presence,
+              query: {session: resource.session}.compact.to_param.presence
             )
           },
           object: nil,
           parent: nil,
           policy: :create?,
-          root_relative_iri: -> {
+          root_relative_iri: lambda {
             RDF::URI(
               path: '/u/otp_secrets/new',
               query: {session: resource.session}.compact.to_param.presence
