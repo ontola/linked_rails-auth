@@ -3,7 +3,6 @@
 module LinkedRails
   module Auth
     class RegistrationsController < Devise::RegistrationsController
-      include AuthHelper
       skip_before_action :assert_is_devise_resource!, only: :show
       before_action :configure_permitted_parameters, only: :create
       active_response :show

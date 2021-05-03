@@ -2,7 +2,7 @@ module LinkedRails
   module Auth
     module OtpHelper
       def handle_expired_session
-        raise LinkedRails::Errors::Expired, I18n.t('messages.otp_secrets.expired')
+        raise LinkedRails::Auth::Errors::Expired, I18n.t('messages.otp_secrets.expired')
       end
 
       def session_from_param

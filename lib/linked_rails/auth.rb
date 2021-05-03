@@ -2,7 +2,9 @@
 
 require 'linked_rails/auth/engine'
 require 'linked_rails/auth/routes'
+require 'linked_rails/auth/errors'
 require 'linked_rails/auth/auth_helper'
+require 'linked_rails/auth/controller'
 
 module LinkedRails
   module Auth

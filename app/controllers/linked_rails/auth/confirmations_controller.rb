@@ -3,7 +3,6 @@
 module LinkedRails
   module Auth
     class ConfirmationsController < Devise::ConfirmationsController
-      include AuthHelper
       active_response :new, :show, :update
 
       private

@@ -103,11 +103,11 @@ module LinkedRails
       def raise_login_error(request) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         raise(
           if LinkedRails.user_class.find_by(email: request.params[:user][:email]).nil?
-            LinkedRails::Errors::UnknownEmail.new
+            LinkedRails::Auth::Errors::UnknownEmail.new
           elsif request.env['warden'].message == :invalid
-            LinkedRails::Errors::WrongPassword.new
+            LinkedRails::Auth::Errors::WrongPassword.new
           elsif request.env['warden'].message == :not_found_in_database
-            LinkedRails::Errors::WrongPassword.new
+            LinkedRails::Auth::Errors::WrongPassword.new
           else
             "unhandled login state #{request.env['warden'].message}"
           end
@@ -120,7 +120,7 @@ module LinkedRails
 
       def token_with_errors(exception)
         token_with_errors = AccessToken.new
-        field = [Errors::WrongPassword].include?(exception.class) ? :password : :email
+        field = [LinkedRails::Auth::Errors::WrongPassword].include?(exception.class) ? :password : :email
         token_with_errors.errors.add(field, exception.message)
         token_with_errors
       end

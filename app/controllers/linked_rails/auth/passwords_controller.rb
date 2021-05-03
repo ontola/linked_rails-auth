@@ -3,8 +3,6 @@
 module LinkedRails
   module Auth
     class PasswordsController < Devise::PasswordsController
-      include AuthHelper
-
       skip_before_action :require_no_authentication, only: :create
       active_response :new, :edit
 
