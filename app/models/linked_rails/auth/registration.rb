@@ -18,6 +18,8 @@ module LinkedRails
         def iri_template
           LinkedRails.user_class.iri_template
         end
+
+        def root_collection(_opts={}); end
       end
     end
   end
