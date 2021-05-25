@@ -3,8 +3,6 @@
 module LinkedRails
   module Auth
     class OtpSecretsController < LinkedRails.controller_parent_class
-      include OtpHelper
-
       private
 
       def create_success
@@ -12,38 +10,10 @@ module LinkedRails
           sign_in(current_resource.user, otp_verified: true) if current_user.guest?
 
           respond_with_redirect(
-            location: session_from_param['redirect_uri'] || LinkedRails.iri.to_s,
+            location: current_resource.redirect_url,
             reload: true
           )
         end
-      end
-
-      def current_resource
-        return super if %w[delete destroy].include?(action_name) && params.key?(:id)
-
-        @current_resource ||= secret_for_user_id(
-          user_id_from_session || (current_user.guest? ? raise(ActiveRecord::RecordNotFound) : current_user.id)
-        )
-      end
-
-      def secret_for_user_id(user_id)
-        secret = LinkedRails.otp_secret_class.find_or_create_by!(user_id: user_id)
-        secret.session = session_param if params[:session]
-        secret
-      end
-
-      def delete_success_options
-        super.merge(
-          meta: [same_as_statement]
-        )
-      end
-
-      def same_as_statement
-        RDF::Statement.new(
-          LinkedRails.iri(path: '/u/otp_secrets/delete'),
-          RDF::OWL.sameAs,
-          LinkedRails.iri(path: "#{current_resource.iri.path}/delete")
-        )
       end
 
       def destroy_success

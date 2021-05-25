@@ -3,22 +3,28 @@
 module LinkedRails
   module Auth
     class SessionsController < ApplicationController
-      active_response :new, :create
+      active_response :create
 
       private
 
       def active_response_success_message; end
+
+      def active_response_failure_message; end
 
       def create_execute
         true
       end
 
       def create_success_location
-        if LinkedRails.user_class.find_for_database_authentication(email: permit_params[:email])
-          LinkedRails.iri(path: 'u/access_tokens/new').to_s
+        if requested_user
+          LinkedRails.iri(path: 'u/access_token/new').to_s
         else
-          LinkedRails.iri(path: 'users/sign_up').to_s
+          LinkedRails.iri(path: 'u/registration/new').to_s
         end
+      end
+
+      def requested_user
+        @requested_user ||= LinkedRails.user_class.find_for_database_authentication(email: permit_params[:email])
       end
 
       def destroy_execute
@@ -29,10 +35,6 @@ module LinkedRails
         respond_with_redirect(
           location: '/'
         )
-      end
-
-      def new_resource_params
-        params.permit(:redirect_url)
       end
 
       def permit_params

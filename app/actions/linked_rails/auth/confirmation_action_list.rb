@@ -7,16 +7,13 @@ module LinkedRails
         LinkedRails.confirmation_class
       end
 
-      has_action(
-        :create,
-        create_options.merge(
-          collection: false,
-          include_object: true,
-          object: nil,
-          policy: :create?,
-          url: -> { LinkedRails.iri(path: '/users/confirmation') },
-          type: [Vocab::ONTOLA['Create::Auth::Confirmation'], RDF::Vocab::SCHEMA.CreateAction]
-        )
+      has_singular_create_action(
+        form: -> { resource.class.try(:form_class) },
+        type: [Vocab::ONTOLA['Create::Auth::Confirmation'], RDF::Vocab::SCHEMA.CreateAction]
+      )
+      has_singular_update_action(
+        form: -> { nil },
+        label: I18n.t('actions.confirmations.update.label', default: nil)
       )
     end
   end

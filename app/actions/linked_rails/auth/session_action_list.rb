@@ -7,17 +7,15 @@ module LinkedRails
         LinkedRails.session_class
       end
 
-      has_action(
-        :create,
-        create_options.merge(
-          collection: false,
-          include_object: true,
-          object: nil,
-          policy: :create?,
-          root_relative_iri: -> { resource.root_relative_iri },
-          type: [Vocab::ONTOLA['Create::Auth::Session'], RDF::Vocab::SCHEMA.CreateAction],
-          url: -> { LinkedRails.iri(path: '/u/sessions') }
-        )
+      has_singular_create_action(
+        root_relative_iri: lambda {
+          uri = resource.root_relative_iri.dup
+          uri.path ||= ''
+          uri.path += '/new'
+          uri.query = {redirect_url: resource.redirect_url}.compact.to_param.presence
+          uri.to_s
+        },
+        type: [Vocab::ONTOLA['Create::Auth::Session'], RDF::Vocab::SCHEMA.CreateAction]
       )
     end
   end

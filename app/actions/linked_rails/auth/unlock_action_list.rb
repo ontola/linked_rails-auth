@@ -7,23 +7,11 @@ module LinkedRails
         LinkedRails.unlock_class
       end
 
-      has_action(
-        :create,
-        create_options.merge(
-          collection: false,
-          include_object: true,
-          object: nil,
-          policy: :create?,
-          url: -> { LinkedRails.iri(path: '/users/unlock') }
-        )
+      has_singular_create_action(
+        form: -> { resource.class.try(:form_class) }
       )
 
-      has_action(
-        :update,
-        update_options.merge(
-          url: -> { LinkedRails.iri(path: '/users/unlock') }
-        )
-      )
+      has_singular_update_action
     end
   end
 end

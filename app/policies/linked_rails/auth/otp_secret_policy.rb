@@ -16,6 +16,8 @@ module LinkedRails
       end
 
       def destroy?
+        raise(ActiveRecord::RecordNotFound) unless administrate_otp? || current_user?
+
         return forbid_with_message(I18n.t('messages.otp_secrets.not_activated')) unless record.active?
 
         current_user? || administrate_otp?

@@ -6,59 +6,30 @@ module LinkedRails
       enhance LinkedRails::Enhancements::Actionable
       enhance LinkedRails::Enhancements::Creatable
       enhance LinkedRails::Enhancements::Updatable
-      attr_accessor :current_user, :email, :token, :user, :password_token
+      enhance LinkedRails::Enhancements::Singularable
+      attr_accessor :confirmation_token, :user, :password_token
+      alias root_relative_iri root_relative_singular_iri
 
       def anonymous_iri?
-        token.blank?
+        confirmation_token.blank?
       end
 
       def confirm!
-        user&.confirm
+        user!.confirm
       end
 
-      def confirmed?
-        user&.confirmed?
-      end
+      delegate :confirmed?, to: :user!
 
-      def description
-        I18n.t('actions.confirmations.update.description', default: nil)
-      end
-
-      def entry_point
-        @entry_point ||= LinkedRails::EntryPoint.new(
-          parent: self,
-          url: iri
-        )
-      end
-
-      def form; end
-
-      def http_method
-        :PUT
-      end
-
-      def image; end
-
-      def iri_opts
-        {confirmation_token: token}
+      def singular_iri_opts
+        {confirmation_token: confirmation_token}
       end
 
       def redirect_url
         LinkedRails.iri
       end
 
-      def submit_label
-        I18n.t('actions.confirmations.update.submit', default: 'Confirm')
-      end
-
-      private
-
-      def reset_password?
-        user.present? && user.encrypted_password.blank?
-      end
-
-      def set_reset_password_token
-        self.password_token = user.send(:set_reset_password_token)
+      def user!
+        user || raise(ActiveRecord::RecordNotFound)
       end
 
       class << self
@@ -66,12 +37,32 @@ module LinkedRails
           LinkedRails.confirmation_action_list_class
         end
 
+        def form_class
+          LinkedRails.confirmation_form_class
+        end
+
         def iri_namespace
           Vocab::ONTOLA
         end
 
-        def iri_template
-          @iri_template ||= URITemplate.new('/users/confirmation{?confirmation_token}')
+        def singular_iri_template
+          @singular_iri_template ||= URITemplate.new("/#{singular_route_key}{?confirmation_token}")
+        end
+
+        def requested_singular_resource(params, _user_context)
+          return new unless params.key?(:confirmation_token)
+
+          user_by_token = LinkedRails.user_class.find_by(confirmation_token: params[:confirmation_token])
+          return if user_by_token.blank?
+
+          new(
+            confirmation_token: params[:confirmation_token],
+            user: user_by_token
+          )
+        end
+
+        def singular_route_key
+          'u/confirmation'
         end
       end
     end

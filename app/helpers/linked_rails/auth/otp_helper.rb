@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LinkedRails
   module Auth
     module OtpHelper
@@ -5,10 +7,10 @@ module LinkedRails
         raise LinkedRails::Auth::Errors::Expired, I18n.t('messages.otp_secrets.expired')
       end
 
-      def session_from_param
-        return {} unless params[:session]
+      def session_from_param(session_param)
+        return {} unless session_param
 
-        @session_from_param ||= JWT.decode(
+        JWT.decode(
           session_param,
           Doorkeeper::JWT.configuration.secret_key,
           true,
@@ -18,16 +20,10 @@ module LinkedRails
         handle_expired_session
       end
 
-      def user_id_from_session
-        session_from_param['user_id']
-      end
+      def user_from_session(session_param)
+        user_id = session_from_param(session_param)['user_id']
 
-      def user_id_from_session!
-        user_id_from_session || raise(ActiveRecord::RecordNotFound)
-      end
-
-      def session_param
-        params.require(:session)
+        User.find_by(id: user_id) if user_id
       end
     end
   end

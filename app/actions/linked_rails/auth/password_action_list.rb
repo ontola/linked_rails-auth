@@ -7,31 +7,18 @@ module LinkedRails
         LinkedRails.password_class
       end
 
-      has_action(
-        :create,
-        create_options.merge(
-          collection: false,
-          include_object: true,
-          object: nil,
-          policy: :create?,
-          url: -> { LinkedRails.iri(path: '/users/password') },
-          type: [Vocab::ONTOLA['Create::Auth::Password'], RDF::Vocab::SCHEMA.CreateAction]
-        )
+      has_singular_create_action(
+        type: [Vocab::ONTOLA['Create::Auth::Password'], RDF::Vocab::SCHEMA.CreateAction]
       )
 
-      has_action(
-        :update,
-        update_options.merge(
-          include_object: true,
-          label: nil,
-          root_relative_iri: lambda {
-            RDF::URI(
-              path: '/users/password/edit',
-              query: {reset_password_token: resource.reset_password_token}.to_param
-            )
-          },
-          url: -> { LinkedRails.iri(path: '/users/password') }
-        )
+      has_singular_update_action(
+        label: nil,
+        root_relative_iri: lambda {
+          RDF::URI(
+            path: '/u/password/edit',
+            query: {reset_password_token: resource.reset_password_token}.compact.to_param.presence
+          )
+        }
       )
     end
   end

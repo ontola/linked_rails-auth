@@ -12,6 +12,10 @@ module LinkedRails
       def update?
         true
       end
+
+      def show?
+        true
+      end
     end
   end
 end
