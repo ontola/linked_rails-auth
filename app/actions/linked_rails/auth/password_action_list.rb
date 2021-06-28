@@ -8,7 +8,7 @@ module LinkedRails
       end
 
       has_singular_create_action(
-        type: [Vocab::ONTOLA['Create::Auth::Password'], RDF::Vocab::SCHEMA.CreateAction]
+        type: [Vocab.ontola['Create::Auth::Password'], Vocab.schema.CreateAction]
       )
 
       has_singular_update_action(

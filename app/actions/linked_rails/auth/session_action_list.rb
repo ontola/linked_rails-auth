@@ -15,7 +15,7 @@ module LinkedRails
           uri.query = {redirect_url: resource.redirect_url}.compact.to_param.presence
           uri.to_s
         },
-        type: [Vocab::ONTOLA['Create::Auth::Session'], RDF::Vocab::SCHEMA.CreateAction]
+        type: [Vocab.ontola['Create::Auth::Session'], Vocab.schema.CreateAction]
       )
     end
   end

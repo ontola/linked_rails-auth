@@ -3,7 +3,7 @@
 module LinkedRails
   module Auth
     class UnlockSerializer < LinkedRails.serializer_parent_class
-      attribute :email, predicate: RDF::Vocab::SCHEMA.email, datatype: RDF::XSD[:string]
+      attribute :email, predicate: Vocab.schema.email, datatype: RDF::XSD[:string]
     end
   end
 end

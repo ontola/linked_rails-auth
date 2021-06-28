@@ -8,7 +8,7 @@ module LinkedRails
       end
 
       has_singular_create_action(
-        type: [Vocab::ONTOLA['Create::Auth::AccessToken'], RDF::Vocab::SCHEMA.CreateAction],
+        type: [Vocab.ontola['Create::Auth::AccessToken'], Vocab.schema.CreateAction],
         url: -> { LinkedRails.iri(path: '/login') }
       )
     end

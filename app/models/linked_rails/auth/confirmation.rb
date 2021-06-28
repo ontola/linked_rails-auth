@@ -42,7 +42,7 @@ module LinkedRails
         end
 
         def iri_namespace
-          Vocab::ONTOLA
+          Vocab.ontola
         end
 
         def singular_iri_template

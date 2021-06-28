@@ -9,7 +9,7 @@ module LinkedRails
 
       has_singular_create_action(
         form: -> { resource.class.try(:form_class) },
-        type: [Vocab::ONTOLA['Create::Auth::Confirmation'], RDF::Vocab::SCHEMA.CreateAction]
+        type: [Vocab.ontola['Create::Auth::Confirmation'], Vocab.schema.CreateAction]
       )
       has_singular_update_action(
         form: -> { nil },

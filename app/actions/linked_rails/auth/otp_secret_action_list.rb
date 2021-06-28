@@ -4,7 +4,7 @@ module LinkedRails
   module Auth
     class OtpSecretActionList < LinkedRails.action_list_parent_class
       has_singular_create_action(
-        type: RDF::Vocab::SCHEMA[:CreateAction],
+        type: Vocab.schema[:CreateAction],
         url: lambda {
           LinkedRails.iri(
             path: 'u/otp_secret',
