@@ -8,6 +8,10 @@ module LinkedRails
       def create?
         true
       end
+
+      def show?
+        true
+      end
     end
   end
 end

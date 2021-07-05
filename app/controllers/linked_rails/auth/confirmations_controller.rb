@@ -3,20 +3,20 @@
 module LinkedRails
   module Auth
     class ConfirmationsController < Devise::ConfirmationsController
-      active_response :new, :show, :update
+      active_response :show, :update
 
       private
 
       def after_confirmation_path_for(_resource_name, _resource)
         if current_user.guest?
-          LinkedRails.iri(path: '/u/sign_in').path
+          LinkedRails.iri(path: '/u/session/new').path
         else
           LinkedRails.iri.path
         end
       end
 
       def after_resending_confirmation_instructions_path_for(_resource_name)
-        LinkedRails.iri(path: '/u/sign_in').path
+        LinkedRails.iri(path: '/u/session/new').path
       end
 
       def already_confirmed_notice
@@ -28,11 +28,8 @@ module LinkedRails
       end
 
       def create_execute
-        var = :"@#{controller_name.singularize}"
-        instance_variable_set(
-          var,
-          resource_class.send_confirmation_instructions(resource_params)
-        )
+        @current_resource = resource_class.send_confirmation_instructions(resource_params)
+
         successfully_sent?(current_resource!)
       end
 
@@ -44,10 +41,6 @@ module LinkedRails
         find_message(:send_instructions)
       end
 
-      def new_resource
-        LinkedRails.confirmation_class.new(user: current_user)
-      end
-
       def original_token
         @original_token ||= params[:confirmation_token]
       end
@@ -55,22 +48,6 @@ module LinkedRails
       def resource_params
         params.fetch(resource_name, nil) ||
           params.fetch(controller_name.singularize, {})
-      end
-
-      def requested_resource
-        return if user_by_token.blank?
-
-        @requested_resource ||=
-          LinkedRails.confirmation_class.new(
-            current_user: current_user,
-            email: user_by_token&.email,
-            user: user_by_token,
-            token: original_token
-          )
-      end
-
-      def show_includes
-        %i[entry_point]
       end
 
       def show_success
@@ -98,10 +75,6 @@ module LinkedRails
           location: after_confirmation_path_for(resource_name, current_resource!),
           notice: find_message(:confirmed)
         )
-      end
-
-      def user_by_token
-        @user_by_token ||= LinkedRails.user_class.find_by(confirmation_token: original_token)
       end
 
       class << self

@@ -2,7 +2,7 @@
 
 module LinkedRails
   module Auth
-    class OtpAttempt < LinkedRails.otp_secret_class
+    class OtpAttempt < OtpBase
       def raise_on_persisting(_opts = {})
         raise "#{self.class.name} should not be persisted"
       end
@@ -10,9 +10,7 @@ module LinkedRails
         alias_method method, :raise_on_persisting unless method.to_s.include?('?')
       end
 
-      def iri_opts
-        {session: session}
-      end
+      alias root_relative_iri root_relative_singular_iri
 
       def save
         validate_otp_attempt
@@ -20,15 +18,22 @@ module LinkedRails
         errors.empty?
       end
 
-      private
-
-      def anonymous_iri?
-        false
-      end
-
       class << self
-        def iri_template
-          @iri_template ||= URITemplate.new('/u/otp_attempts{/id}{?session}{#fragment}')
+        def form_class
+          LinkedRails.otp_attempt_form_class
+        end
+
+        def singular_route_key
+          'u/otp_attempt'
+        end
+
+        def requested_singular_resource(params, user_context)
+          user = user_for_otp(params, user_context)
+          return if user.blank?
+
+          attempt = LinkedRails.otp_attempt_class.find_by(user: user) || LinkedRails.otp_attempt_class.new
+          attempt.encoded_session = params[:session]
+          attempt
         end
       end
     end

@@ -5,7 +5,7 @@ module LinkedRails
     class OtpSecretForm < LinkedRails.form_parent_class
       resource :provision_image,
                description: -> { I18n.t('otp_secrets.properties.provision_image.description') },
-               path: NS::SCHEMA.image
+               path: Vocab.schema.image
       field :otp_attempt, description: '', min_count: 1
     end
   end

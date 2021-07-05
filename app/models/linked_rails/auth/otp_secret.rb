@@ -2,32 +2,28 @@
 
 module LinkedRails
   module Auth
-    class OtpSecret < ApplicationRecord
-      self.table_name = 'otp_secrets'
-
-      enhance LinkedRails::Enhancements::Actionable
-      enhance LinkedRails::Enhancements::Creatable
+    class OtpSecret < OtpBase
       enhance LinkedRails::Enhancements::Destroyable
-
-      belongs_to :user
-      has_one_time_password
-      attr_accessor :otp_attempt, :session
 
       validate :validate_otp_attempt, on: %i[update]
 
       def image
-        return if active?
+        return if active? || !persisted?
 
-        @image_object ||=
+        @image ||=
           LinkedRails::MediaObject.new(
             content_url: data_url,
             content_type: 'image/png',
-            iri: LinkedRails.iri(path: iri.path, fragment: 'image')
+            iri: LinkedRails.iri(path: root_relative_iri, fragment: 'image')
           )
       end
 
       def iri_opts
-        {id: id, session: session}
+        {id: id}
+      end
+
+      def redirect_url
+        decoded_session['redirect_uri'] || LinkedRails.iri.to_s
       end
 
       private
@@ -49,19 +45,36 @@ module LinkedRails
         Rails.application.class.parent_name
       end
 
-      def validate_otp_attempt
-        return if persisted? && authenticate_otp(otp_attempt, drift: LinkedRails::Auth.otp_drift)
-
-        errors.add(:otp_attempt, I18n.t('messages.otp_secrets.invalid'))
-      end
-
       class << self
-        def iri_template
-          @iri_template ||= URITemplate.new('/u/otp_secrets{/id}{?session}{#fragment}')
+        def form_class
+          LinkedRails.otp_secret_form_class
         end
 
-        def show_includes
+        def preview_includes
           %i[image]
+        end
+
+        def requested_singular_resource(params, user_context)
+          user = user_for_otp(params, user_context)
+          return if user.blank?
+
+          secret = LinkedRails.otp_secret_class.find_or_create_by!(user: user)
+          secret.encoded_session = params[:session]
+          secret
+        rescue ActiveRecord::RecordNotUnique
+          requested_singular_resource(params, user_context)
+        end
+
+        def requested_single_resource(params, _user_context)
+          LinkedRails.otp_secret_class.find_by(id: params[:id])
+        end
+
+        def route_key
+          'u/otp_secrets'
+        end
+
+        def singular_route_key
+          'u/otp_secret'
         end
       end
     end

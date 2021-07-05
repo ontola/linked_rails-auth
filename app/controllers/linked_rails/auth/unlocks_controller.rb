@@ -3,28 +3,30 @@
 module LinkedRails
   module Auth
     class UnlocksController < Devise::UnlocksController
-      active_response :new
-
       private
 
       def after_sending_unlock_instructions_path_for(_resource)
-        LinkedRails.iri(path: '/u/sign_in').path
+        LinkedRails.iri(path: '/u/session/new').path
+      end
+
+      def after_unlock_path_for(_resource)
+        LinkedRails.iri(path: '/u/session/new').path
       end
 
       def create_execute
-        self.resource = resource_class.send_unlock_instructions(resource_params)
+        @current_resource = resource_class.send_unlock_instructions(resource_params)
+
+        successfully_sent?(current_resource!)
       end
 
+      def create_failure_message; end
+
       def create_success_location
-        after_sending_unlock_instructions_path_for(resource)
+        after_sending_unlock_instructions_path_for(current_resource)
       end
 
       def create_success_message
         find_message(:send_instructions)
-      end
-
-      def new_execute
-        self.resource = resource_class.new
       end
 
       def resource_params

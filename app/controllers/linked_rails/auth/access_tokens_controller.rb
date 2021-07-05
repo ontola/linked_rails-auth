@@ -2,7 +2,7 @@
 
 module LinkedRails
   module Auth
-    class AccessTokensController < Doorkeeper::TokensController
+    class AccessTokensController < Doorkeeper::TokensController # rubocop:disable Metrics/ClassLength
       def create
         headers.merge!(authorize_response.headers)
 
@@ -63,11 +63,11 @@ module LinkedRails
       end
 
       def otp_attempt_form_iri
-        LinkedRails.iri(path: 'u/otp_attempts/new', query: {session: session_param}.to_param)
+        LinkedRails.iri(path: 'u/otp_attempt/new', query: {session: session_param}.to_param)
       end
 
       def otp_secret_form_iri
-        LinkedRails.iri(path: 'u/otp_secrets/new', query: {session: session_param}.to_param)
+        LinkedRails.iri(path: 'u/otp_secret/new', query: {session: session_param}.to_param)
       end
 
       def otp_setup_required?

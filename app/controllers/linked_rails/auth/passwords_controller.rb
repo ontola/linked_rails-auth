@@ -4,23 +4,23 @@ module LinkedRails
   module Auth
     class PasswordsController < Devise::PasswordsController
       skip_before_action :require_no_authentication, only: :create
-      active_response :new, :edit
 
       private
 
       def after_sending_reset_password_instructions_path_for(_resource_name)
-        LinkedRails.iri(path: '/u/sign_in').path
+        LinkedRails.iri(path: '/u/session/new').path
       end
 
       def after_resetting_password_path_for(_resource)
-        LinkedRails.iri(path: '/u/sign_in').path
+        LinkedRails.iri(path: '/u/session/new').path
       end
 
       def create_execute
-        self.resource = resource_class.send_reset_password_instructions(resource_params)
-        @current_resource = resource
-        successfully_sent?(resource)
+        @current_resource = resource_class.send_reset_password_instructions(resource_params)
+        successfully_sent?(current_resource)
       end
+
+      def create_failure_message; end
 
       def create_success_location
         after_sending_reset_password_instructions_path_for(resource_name)
@@ -30,25 +30,8 @@ module LinkedRails
         find_message(:send_instructions)
       end
 
-      def current_resource
-        @current_resource ||= LinkedRails.password_class.new(
-          user: current_user,
-          reset_password_token: params[:reset_password_token]
-        )
-      end
-
-      def edit_execute
-        self.resource = resource_class.new
-        set_minimum_password_length
-        resource.reset_password_token = params[:reset_password_token]
-      end
-
-      def new_execute
-        self.resource = resource_class.new
-      end
-
       def new_session_path(*_args)
-        LinkedRails.iri(path: 'u/sign_in').path
+        LinkedRails.iri(path: 'u/session/new').path
       end
 
       def resource_params
@@ -57,10 +40,9 @@ module LinkedRails
       end
 
       def update_execute
-        self.resource = resource_class.reset_password_by_token(resource_params)
-        @current_resource = resource
+        @current_resource = resource_class.reset_password_by_token(resource_params)
 
-        resource.errors.empty?
+        current_resource.errors.empty?
       end
 
       def update_success_message
@@ -68,7 +50,7 @@ module LinkedRails
       end
 
       def update_success_location
-        after_resetting_password_path_for(resource)
+        after_resetting_password_path_for(current_resource)
       end
 
       class << self

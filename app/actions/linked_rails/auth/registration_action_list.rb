@@ -7,17 +7,8 @@ module LinkedRails
         LinkedRails.registration_class
       end
 
-      has_action(
-        :create,
-        create_options.merge(
-          collection: false,
-          include_object: true,
-          form: LinkedRails.registration_form_class,
-          object: nil,
-          policy: :create?,
-          root_relative_iri: '/users/sign_up',
-          url: -> { LinkedRails.iri(path: '/users') }
-        )
+      has_singular_create_action(
+        root_relative_iri: '/u/registration/new'
       )
     end
   end
