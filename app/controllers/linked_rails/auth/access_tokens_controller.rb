@@ -55,11 +55,7 @@ module LinkedRails
       end
 
       def otp_activated?
-        @otp_activated ||=
-          LinkedRails.otp_secret_class.exists?(
-            user_id: authorize_response.token.resource_owner_id,
-            active: true
-          )
+        @otp_activated ||= LinkedRails.otp_secret_class.activated?(authorize_response.token.resource_owner_id)
       end
 
       def otp_attempt_form_iri

@@ -35,6 +35,7 @@ LinkedRails.configurable_class(nil, :unlock_form, default: 'LinkedRails::Auth::U
 LinkedRails.configurable_class(nil, :otp_attempt, default: 'LinkedRails::Auth::OtpAttempt')
 LinkedRails.configurable_class(nil, :otp_attempt_action_list, default: 'LinkedRails::Auth::OtpAttemptActionList')
 LinkedRails.configurable_class(nil, :otp_attempt_form, default: 'LinkedRails::Auth::OtpAttemptForm')
+LinkedRails.configurable_class(nil, :otp_owner, default: 'User')
 LinkedRails.configurable_class(nil, :otp_secret, default: 'LinkedRails::Auth::OtpSecret')
 LinkedRails.configurable_class(nil, :otp_secret_action_list, default: 'LinkedRails::Auth::OtpSecretActionList')
 LinkedRails.configurable_class(nil, :otp_secret_form, default: 'LinkedRails::Auth::OtpSecretForm')

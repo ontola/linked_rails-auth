@@ -31,7 +31,7 @@ module LinkedRails
       def data_url
         [
           'data:image/svg+xml;base64,',
-          RQRCode::QRCode.new(provisioning_uri(user.email, issuer: issuer)).as_svg(module_size: 4).to_s
+          RQRCode::QRCode.new(provisioning_uri(owner.email, issuer: issuer)).as_svg(module_size: 4).to_s
         ].pack('A*m').delete("\n")
       end
 
@@ -46,6 +46,13 @@ module LinkedRails
       end
 
       class << self
+        def activated?(owner_id)
+          LinkedRails.otp_secret_class.exists?(
+            owner_id: owner_id,
+            active: true
+          )
+        end
+
         def form_class
           LinkedRails.otp_secret_form_class
         end
@@ -55,10 +62,10 @@ module LinkedRails
         end
 
         def requested_singular_resource(params, user_context)
-          user = user_for_otp(params, user_context)
-          return if user.blank?
+          owner = owner_for_otp(params, user_context)
+          return if owner.blank?
 
-          secret = LinkedRails.otp_secret_class.find_or_create_by!(user: user)
+          secret = LinkedRails.otp_secret_class.find_or_create_by!(owner: owner)
           secret.encoded_session = params[:session]
           secret
         rescue ActiveRecord::RecordNotUnique

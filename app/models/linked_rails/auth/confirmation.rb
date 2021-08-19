@@ -7,7 +7,7 @@ module LinkedRails
       enhance LinkedRails::Enhancements::Creatable
       enhance LinkedRails::Enhancements::Updatable
       enhance LinkedRails::Enhancements::Singularable
-      attr_accessor :confirmation_token, :user, :password_token
+      attr_accessor :confirmation_token, :email, :user, :password_token
       alias root_relative_iri root_relative_singular_iri
 
       def anonymous_iri?
@@ -15,10 +15,10 @@ module LinkedRails
       end
 
       def confirm!
-        user!.confirm
+        owner!.confirm
       end
 
-      delegate :confirmed?, to: :user!
+      delegate :confirmed?, to: :owner!
 
       def singular_iri_opts
         {confirmation_token: confirmation_token}
@@ -28,8 +28,8 @@ module LinkedRails
         LinkedRails.iri
       end
 
-      def user!
-        user || raise(ActiveRecord::RecordNotFound)
+      def owner!
+        owner || raise(ActiveRecord::RecordNotFound)
       end
 
       class << self

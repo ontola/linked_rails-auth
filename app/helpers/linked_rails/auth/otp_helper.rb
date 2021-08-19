@@ -20,10 +20,10 @@ module LinkedRails
         handle_expired_session
       end
 
-      def user_from_session(session_param)
+      def owner_from_session(session_param)
         user_id = session_from_param(session_param)['user_id']
 
-        User.find_by(id: user_id) if user_id
+        LinkedRails.otp_owner_class.find_by(id: user_id) if user_id
       end
     end
   end

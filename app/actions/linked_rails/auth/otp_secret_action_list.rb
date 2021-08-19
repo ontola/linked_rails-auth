@@ -21,7 +21,7 @@ module LinkedRails
       )
 
       has_singular_destroy_action(
-        description: -> { I18n.t('actions.otp_secrets.destroy.description', name: resource.user.display_name) }
+        description: -> { I18n.t('actions.otp_secrets.destroy.description', name: resource.owner.display_name) }
       )
     end
   end

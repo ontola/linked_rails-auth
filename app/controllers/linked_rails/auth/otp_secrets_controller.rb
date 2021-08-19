@@ -7,7 +7,7 @@ module LinkedRails
 
       def create_success
         active_response_block do
-          sign_in(current_resource.user, otp_verified: true) if current_user.guest?
+          sign_in(current_resource.owner, otp_verified: true) if current_user.guest?
 
           respond_with_redirect(
             location: current_resource.redirect_url,

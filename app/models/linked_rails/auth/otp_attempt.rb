@@ -28,10 +28,10 @@ module LinkedRails
         end
 
         def requested_singular_resource(params, user_context)
-          user = user_for_otp(params, user_context)
-          return if user.blank?
+          owner = owner_for_otp(params, user_context)
+          return if owner.blank?
 
-          attempt = LinkedRails.otp_attempt_class.find_by(user: user) || LinkedRails.otp_attempt_class.new
+          attempt = LinkedRails.otp_attempt_class.find_by(owner: owner) || LinkedRails.otp_attempt_class.new
           attempt.encoded_session = params[:session]
           attempt
         end

@@ -14,8 +14,8 @@ module LinkedRails
       include OtpHelper
 
       has_one_time_password
-      belongs_to :user
-      validates :user, presence: true
+      belongs_to :owner, class_name: LinkedRails.otp_owner_class.to_s
+      validates :owner, presence: true
 
       attr_accessor :encoded_session, :otp_attempt
 
@@ -44,9 +44,9 @@ module LinkedRails
           @singular_iri_template ||= URITemplate.new("{/parent_iri*}/#{singular_route_key}{?session}{#fragment}")
         end
 
-        def user_for_otp(params, user_context)
+        def owner_for_otp(params, user_context)
           if params.key?(:session)
-            user_from_session(params[:session])
+            owner_from_session(params[:session])
           else
             user_context unless user_context.guest?
           end
