@@ -33,6 +33,12 @@ module LinkedRails
         params.fetch(resource_name, nil) ||
           params.fetch(controller_name.singularize, {})
       end
+
+      class << self
+        def controller_class
+          LinkedRails.unlock_class
+        end
+      end
     end
   end
 end

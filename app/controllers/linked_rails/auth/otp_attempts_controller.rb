@@ -10,6 +10,12 @@ module LinkedRails
 
         head 200
       end
+
+      class << self
+        def controller_class
+          LinkedRails.otp_attempt_class
+        end
+      end
     end
   end
 end

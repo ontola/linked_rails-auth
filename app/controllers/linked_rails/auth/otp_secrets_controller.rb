@@ -27,6 +27,12 @@ module LinkedRails
 
         super.merge(active: true)
       end
+
+      class << self
+        def controller_class
+          LinkedRails.otp_secret_class
+        end
+      end
     end
   end
 end

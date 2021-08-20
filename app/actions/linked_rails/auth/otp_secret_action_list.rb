@@ -3,6 +3,10 @@
 module LinkedRails
   module Auth
     class OtpSecretActionList < LinkedRails.action_list_parent_class
+      def self.actionable_class
+        LinkedRails.otp_secret_class
+      end
+
       has_singular_create_action(
         type: Vocab.schema[:CreateAction],
         url: lambda {
