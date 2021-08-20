@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rqrcode'
+
 module LinkedRails
   module Auth
     class OtpSecret < OtpBase
@@ -42,7 +44,7 @@ module LinkedRails
       end
 
       def issuer_name
-        Rails.application.class.parent_name
+        Rails.application.railtie_name.chomp('_application').humanize
       end
 
       class << self

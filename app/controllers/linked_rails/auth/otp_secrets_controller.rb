@@ -3,6 +3,8 @@
 module LinkedRails
   module Auth
     class OtpSecretsController < LinkedRails.controller_parent_class
+      active_response :show
+
       private
 
       def create_success

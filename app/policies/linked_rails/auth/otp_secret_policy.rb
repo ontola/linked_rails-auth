@@ -6,13 +6,13 @@ module LinkedRails
       permit_attributes %i[otp_attempt]
 
       def show?
-        user.guest? || current_user? || administrate_otp?
+        user_context.guest? || current_user? || administrate_otp?
       end
 
       def create?
-        return forbid_with_message(I18n.t('messages.otp_secrets.already_exists')) if user.otp_active?
+        return forbid_with_message(I18n.t('messages.otp_secrets.already_exists')) if user_context.otp_active?
 
-        user.guest? || current_user?
+        user_context.guest? || current_user?
       end
 
       def destroy?
@@ -26,7 +26,7 @@ module LinkedRails
       private
 
       def current_user?
-        record.user_id == user.id
+        record.owner_id == user_context.id
       end
 
       def administrate_otp?

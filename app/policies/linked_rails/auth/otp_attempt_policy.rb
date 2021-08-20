@@ -6,11 +6,11 @@ module LinkedRails
       permit_attributes %i[otp_attempt]
 
       def show?
-        user.guest?
+        user_context.guest?
       end
 
       def create?
-        user.guest? && record.active?
+        user_context.guest? && record.active?
       end
     end
   end
