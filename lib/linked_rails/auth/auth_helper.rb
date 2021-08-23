@@ -64,7 +64,6 @@ module LinkedRails
 
       def handle_invalid_token
         @current_user = create_guest_user
-        update_oauth_token(generate_access_token(@current_user))
       end
 
       def sign_in(resource, *_args)
