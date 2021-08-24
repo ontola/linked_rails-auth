@@ -10,6 +10,7 @@ module LinkedRails
             description: '',
             input_field: LinkedRails::Form::Field::PasswordInput,
             min_count: 1
+      resource :reset_password, url: -> { LinkedRails.iri(path: '/u/password/new') }
 
       hidden do
         field :redirect_url
