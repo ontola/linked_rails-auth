@@ -1,0 +1,2 @@
+You need to set your JWT encryption token.
+Please run `bin/rails credentials:edit` and enter `jwt_encryption_token: [SECRET]``

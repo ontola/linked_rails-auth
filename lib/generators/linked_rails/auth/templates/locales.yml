@@ -1,0 +1,39 @@
+en:
+  actions:
+    confirmations:
+      create:
+        label: "Send confirmation link again"
+        submit: "Send"
+      update:
+        label: "Confirm email address"
+        submit: "Confirm"
+    otp_attempts:
+      create:
+        submit: "Continue"
+    otp_secrets:
+      create:
+        label: 'Two factor authentication'
+        submit: "Continue"
+      destroy:
+        label: 'Disable two factor authentication'
+        description: "Are you sure you want to disable the two factor authentication of **%{name}**?"
+        submit: "Confirm"
+        success: "Two factor authentication is disabled"
+  devise:
+    failure:
+      invalid_email: 'We couldn''t find a user with this email.'
+      invalid_password: 'Invalid password.'
+  forms:
+    access_tokens:
+      email:
+        label: "Email"
+    otp_attempts:
+      helper_text: 'You can find this in the authentication-application you used earlier.'
+      label: "Authentication code"
+    otp_secrets:
+      provision_image:
+        description: 'Install a authentication-application and scan this QR code.'
+    sessions:
+      email:
+        label: "Email"
+
