@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir['{app,config,db,lib}/**/*', 'LICENSE', 'Rakefile', 'README.md']
 
   spec.add_dependency 'active_model_otp'
+  spec.add_dependency 'devise'
   spec.add_dependency 'doorkeeper'
   spec.add_dependency 'doorkeeper-jwt'
   spec.add_dependency 'jwt'

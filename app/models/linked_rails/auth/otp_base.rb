@@ -14,7 +14,9 @@ module LinkedRails
       include OtpHelper
 
       has_one_time_password
-      belongs_to :owner, class_name: LinkedRails.otp_owner_class.to_s
+      # rubocop:disable Rails/ReflectionClassName
+      belongs_to :owner, class_name: LinkedRails.class_variable_get(:@@otp_owner_class)
+      # rubocop:enable Rails/ReflectionClassName
       validates :owner, presence: true
 
       attr_accessor :encoded_session, :otp_attempt

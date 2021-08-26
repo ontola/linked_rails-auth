@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require 'active_model_otp'
+require 'devise'
+require 'doorkeeper'
+require 'doorkeeper/jwt'
+
 require 'linked_rails/auth/engine'
 require 'linked_rails/auth/routes'
 require 'linked_rails/auth/errors'
@@ -13,7 +18,7 @@ module LinkedRails
 end
 
 LinkedRails.configurable_class(nil, :user, default: 'User')
-LinkedRails.configurable_class(nil, :guest_user, default: 'GuestUser')
+LinkedRails.configurable_class(nil, :guest_user, default: 'LinkedRails::Auth::GuestUser')
 LinkedRails.configurable_class(nil, :access_token, default: 'LinkedRails::Auth::AccessToken')
 LinkedRails.configurable_class(nil, :access_token_action_list, default: 'LinkedRails::Auth::AccessTokenActionList')
 LinkedRails.configurable_class(nil, :access_token_form, default: 'LinkedRails::Auth::AccessTokenForm')

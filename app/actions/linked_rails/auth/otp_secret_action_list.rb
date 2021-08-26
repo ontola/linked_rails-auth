@@ -20,8 +20,7 @@ module LinkedRails
             path: '/u/otp_secret/new',
             query: {session: resource.encoded_session}.compact.to_param.presence
           )
-        },
-        label: -> { I18n.t('actions.otp_secrets.create.label') }
+        }
       )
 
       has_singular_destroy_action(

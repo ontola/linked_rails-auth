@@ -11,10 +11,7 @@ module LinkedRails
         form: -> { resource.class.try(:form_class) },
         type: [Vocab.ontola['Create::Auth::Confirmation'], Vocab.schema.CreateAction]
       )
-      has_singular_update_action(
-        form: -> { nil },
-        label: I18n.t('actions.confirmations.update.label', default: nil)
-      )
+      has_singular_update_action(form: -> { nil })
     end
   end
 end

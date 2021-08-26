@@ -7,6 +7,8 @@ module LinkedRails
       enhance LinkedRails::Enhancements::Creatable
       enhance LinkedRails::Enhancements::Singularable
 
+      attr_accessor :redirect_url
+
       class << self
         def action_list
           LinkedRails.registration_action_list_class

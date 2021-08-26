@@ -7,10 +7,7 @@ module LinkedRails
         LinkedRails.otp_attempt_class
       end
 
-      has_singular_create_action(
-        type: Vocab.schema[:CreateAction],
-        label: -> { I18n.t('actions.otp_secrets.create.label') }
-      )
+      has_singular_create_action(type: Vocab.schema[:CreateAction])
     end
   end
 end
