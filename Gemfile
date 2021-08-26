@@ -8,12 +8,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # development dependencies will be added by default to the :development group.
 gemspec
 
-gem 'active_response', git: 'https://github.com/ontola/active_response', branch: :master
+gem 'active_response'
 gem 'devise'
 gem 'doorkeeper'
-gem 'fast_jsonapi', git: 'https://github.com/fast-jsonapi/fast_jsonapi', ref: '2de80d48896751d30fb410e042fd21a710100423'
-gem 'linked_rails', path: '/home/arthur/dev/src/github.com/linked_rails'
-gem 'rdf-serializers', git: 'https://github.com/ontola/rdf-serializers', branch: 'fast-jsonapi'
+gem 'linked_rails'
+gem 'rdf-serializers'
 
 # Declare any dependencies that are still in development here instead of in
 # your gemspec. These might include edge Rails or gems from your path or
