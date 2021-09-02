@@ -36,8 +36,7 @@ module LinkedRails
           auth_resource(OtpSecret, opts)
           linked_resource(
             OtpSecret,
-            controller: opts[:otp_secrets] || LINKED_RAILS_CONTROLLERS[:otp_secrets],
-            nested: false
+            controller: opts[:otp_secrets] || LINKED_RAILS_CONTROLLERS[:otp_secrets]
           )
           auth_resource(Password, opts)
           auth_resource(Registration, opts)
@@ -53,8 +52,7 @@ module LinkedRails
 
         singular_linked_resource(
           klass,
-          controller: opts[key] || LINKED_RAILS_CONTROLLERS[key],
-          nested: false
+          controller: opts[key] || LINKED_RAILS_CONTROLLERS[key]
         )
       end
 
