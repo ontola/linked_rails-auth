@@ -3,10 +3,13 @@
 module LinkedRails
   module Auth
     class RegistrationsController < Devise::RegistrationsController
+      include LinkedRails::Controller
+
       skip_before_action :assert_is_devise_resource!, only: :show
 
       controller_class LinkedRails.registration_class
       active_response :show
+      has_singular_create_action
 
       private
 

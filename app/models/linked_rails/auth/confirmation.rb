@@ -3,10 +3,6 @@
 module LinkedRails
   module Auth
     class Confirmation < LinkedRails::Resource
-      enhance LinkedRails::Enhancements::Actionable
-      enhance LinkedRails::Enhancements::Creatable
-      enhance LinkedRails::Enhancements::Updatable
-      enhance LinkedRails::Enhancements::Singularable
       attr_accessor :confirmation_token, :email, :user, :password_token
       alias root_relative_iri root_relative_singular_iri
 
@@ -33,20 +29,12 @@ module LinkedRails
       end
 
       class << self
-        def action_list
-          LinkedRails.confirmation_action_list_class
-        end
-
         def form_class
           LinkedRails.confirmation_form_class
         end
 
         def iri_namespace
           Vocab.ontola
-        end
-
-        def singular_iri_template
-          @singular_iri_template ||= URITemplate.new("/#{singular_route_key}{?confirmation_token}")
         end
 
         def requested_singular_resource(params, _user_context)
@@ -59,6 +47,10 @@ module LinkedRails
             confirmation_token: params[:confirmation_token],
             user: user_by_token
           )
+        end
+
+        def singular_iri_template
+          @singular_iri_template ||= URITemplate.new("/#{singular_route_key}{?confirmation_token}")
         end
 
         def singular_route_key

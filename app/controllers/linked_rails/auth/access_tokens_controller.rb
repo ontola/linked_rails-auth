@@ -3,7 +3,14 @@
 module LinkedRails
   module Auth
     class AccessTokensController < Doorkeeper::TokensController # rubocop:disable Metrics/ClassLength
+      include LinkedRails::Controller
+
       controller_class LinkedRails.access_token_class
+      has_singular_create_action(
+        type: [Vocab.ontola['Create::Auth::AccessToken'], Vocab.schema.CreateAction],
+        target_url: -> { LinkedRails.iri(path: '/login') }
+      )
+
       def create
         headers.merge!(authorize_response.headers)
 
@@ -50,8 +57,9 @@ module LinkedRails
         error = get_error_response_from_exception(exception)
         headers.merge!(error.headers)
         Bugsnag.notify(exception)
-        Rails.logger.info(error.body.merge(class: exception.class.name).to_json)
-        self.response_body = error.body.merge(class: exception.class.name).to_json
+        klass = exception.class.name.demodulize.underscore.upcase
+        self.response_body = error.body.merge(code: klass).to_json
+        Rails.logger.info(self.response_body)
         self.status = error.status
       end
 

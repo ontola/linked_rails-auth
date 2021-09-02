@@ -5,6 +5,15 @@ module LinkedRails
     class OtpSecretsController < LinkedRails.controller_parent_class
       controller_class LinkedRails.otp_secret_class
       active_response :show
+      has_singular_create_action(
+        type: Vocab.schema[:CreateAction]
+      )
+      has_resource_destroy_action(
+        description: -> { I18n.t('actions.otp_secrets.destroy.description', name: resource.owner.email) }
+      )
+      has_singular_destroy_action(
+        description: -> { I18n.t('actions.otp_secrets.destroy.description', name: resource.owner.email) }
+      )
 
       private
 

@@ -3,18 +3,14 @@
 module LinkedRails
   module Auth
     class Password < LinkedRails::Resource
-      enhance LinkedRails::Enhancements::Actionable
-      enhance LinkedRails::Enhancements::Creatable
-      enhance LinkedRails::Enhancements::Updatable
-      enhance LinkedRails::Enhancements::Singularable
       attr_accessor :email, :password, :password_confirmation, :user, :reset_password_token
       alias root_relative_iri root_relative_singular_iri
 
-      class << self
-        def action_list
-          LinkedRails.password_action_list_class
-        end
+      def singular_iri_opts
+        {reset_password_token: reset_password_token}
+      end
 
+      class << self
         def decrypt_token(token)
           Devise.token_generator.digest(self, :reset_password_token, token)
         end
@@ -40,6 +36,10 @@ module LinkedRails
 
         def singular_route_key
           'u/password'
+        end
+
+        def singular_iri_template
+          @singular_iri_template ||= URITemplate.new("/#{singular_route_key}{?reset_password_token}")
         end
       end
     end

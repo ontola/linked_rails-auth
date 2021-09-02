@@ -3,10 +3,6 @@
 module LinkedRails
   module Auth
     class Unlock < LinkedRails::Resource
-      enhance LinkedRails::Enhancements::Actionable
-      enhance LinkedRails::Enhancements::Creatable
-      enhance LinkedRails::Enhancements::Updatable, except: %i[Serializer]
-      enhance LinkedRails::Enhancements::Singularable
       attr_accessor :email, :unlock_token, :user
       alias root_relative_iri root_relative_singular_iri
 
@@ -19,10 +15,6 @@ module LinkedRails
       end
 
       class << self
-        def action_list
-          LinkedRails.unlock_action_list_class
-        end
-
         def decrypt_token(token)
           Devise.token_generator.digest(self, :unlock_token, token)
         end

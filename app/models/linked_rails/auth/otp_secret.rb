@@ -5,8 +5,6 @@ require 'rqrcode'
 module LinkedRails
   module Auth
     class OtpSecret < OtpBase
-      enhance LinkedRails::Enhancements::Destroyable
-
       validate :validate_otp_attempt, on: %i[update]
 
       def image

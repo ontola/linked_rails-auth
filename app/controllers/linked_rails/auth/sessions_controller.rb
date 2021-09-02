@@ -2,9 +2,11 @@
 
 module LinkedRails
   module Auth
-    class SessionsController < ApplicationController
+    class SessionsController < LinkedRails.controller_parent_class
       controller_class LinkedRails.session_class
-      active_response :create
+      has_singular_create_action(
+        type: [Vocab.ontola['Create::Auth::Session'], Vocab.schema.CreateAction]
+      )
 
       private
 

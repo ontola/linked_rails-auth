@@ -3,17 +3,13 @@
 module LinkedRails
   module Auth
     class Registration < LinkedRails.user_class
-      enhance LinkedRails::Enhancements::Actionable
-      enhance LinkedRails::Enhancements::Creatable
-      enhance LinkedRails::Enhancements::Singularable
-
       attr_accessor :redirect_url
 
-      class << self
-        def action_list
-          LinkedRails.registration_action_list_class
-        end
+      def singular_iri_opts
+        {redirect_url: redirect_url}
+      end
 
+      class << self
         def form_class
           LinkedRails.registration_form_class
         end
@@ -22,12 +18,12 @@ module LinkedRails
           Vocab.ontola
         end
 
-        def iri_template
-          LinkedRails.user_class.iri_template
-        end
-
         def requested_singular_resource(_params, user_context)
           build_new(user_context: user_context)
+        end
+
+        def singular_iri_template
+          @singular_iri_template ||= URITemplate.new("/#{singular_route_key}{?redirect_url}")
         end
 
         def singular_route_key

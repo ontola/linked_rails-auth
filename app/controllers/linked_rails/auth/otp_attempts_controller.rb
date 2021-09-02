@@ -4,6 +4,10 @@ module LinkedRails
   module Auth
     class OtpAttemptsController < LinkedRails.controller_parent_class
       controller_class LinkedRails.otp_attempt_class
+      has_singular_create_action(
+        type: Vocab.schema[:CreateAction]
+      )
+
       private
 
       def create_success

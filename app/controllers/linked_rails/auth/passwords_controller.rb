@@ -3,9 +3,16 @@
 module LinkedRails
   module Auth
     class PasswordsController < Devise::PasswordsController
+      include LinkedRails::Controller
+
       skip_before_action :require_no_authentication, only: :create
 
       controller_class LinkedRails.password_class
+      has_singular_create_action(
+        type: [Vocab.ontola['Create::Auth::Password'], Vocab.schema.CreateAction]
+      )
+      has_singular_update_action(label: nil)
+
       private
 
       def after_sending_reset_password_instructions_path_for(_resource_name)
@@ -15,6 +22,8 @@ module LinkedRails
       def after_resetting_password_path_for(_resource)
         LinkedRails.iri(path: '/u/session/new').path
       end
+
+      def assert_reset_token_passed; end
 
       def create_execute
         @current_resource = resource_class.send_reset_password_instructions(resource_params)

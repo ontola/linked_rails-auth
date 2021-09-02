@@ -6,8 +6,10 @@ module LinkedRails
       secret_attribute :otp_attempt,
                        predicate: Vocab.app[:otp],
                        datatype: RDF::XSD[:integer]
-      attribute :active, predicate: LinkedRails.app_ns[:otpActive]
-      has_one :image, predicate: Vocab.schema.image
+      attribute :active, predicate: Vocab.ontola[:otpActive]
+      has_one :image,
+              predicate: Vocab.schema.image,
+              serializer: LinkedRails::MediaObjectSerializer
     end
   end
 end

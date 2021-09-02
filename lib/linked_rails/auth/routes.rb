@@ -30,18 +30,18 @@ module LinkedRails
           get 'sign_in', to: redirect('/u/session/new')
         end
         devise_scope :user do
-          auth_resource(AccessToken, opts)
-          auth_resource(Confirmation, opts)
-          auth_resource(OtpAttempt, opts)
-          auth_resource(OtpSecret, opts)
+          auth_resource(LinkedRails.access_token_class, opts)
+          auth_resource(LinkedRails.confirmation_class, opts)
+          auth_resource(LinkedRails.otp_attempt_class, opts)
+          auth_resource(LinkedRails.otp_secret_class, opts)
           linked_resource(
-            OtpSecret,
+            LinkedRails.otp_secret_class,
             controller: opts[:otp_secrets] || LINKED_RAILS_CONTROLLERS[:otp_secrets]
           )
-          auth_resource(Password, opts)
-          auth_resource(Registration, opts)
-          auth_resource(Session, opts)
-          auth_resource(Unlock, opts)
+          auth_resource(LinkedRails.password_class, opts)
+          auth_resource(LinkedRails.registration_class, opts)
+          auth_resource(LinkedRails.session_class, opts)
+          auth_resource(LinkedRails.unlock_class, opts)
         end
       end
 

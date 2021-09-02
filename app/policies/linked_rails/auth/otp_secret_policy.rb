@@ -10,7 +10,7 @@ module LinkedRails
       end
 
       def create?
-        return forbid_with_message(I18n.t('messages.otp_secrets.already_exists')) if user_context.otp_active?
+        return forbid_with_message(I18n.t('actions.otp_secrets.errors.already_exists')) if user_context.otp_active?
 
         user_context.guest? || current_user?
       end
@@ -18,7 +18,7 @@ module LinkedRails
       def destroy?
         raise(ActiveRecord::RecordNotFound) unless administrate_otp? || current_user?
 
-        return forbid_with_message(I18n.t('messages.otp_secrets.not_activated')) unless record.active?
+        return forbid_with_message(I18n.t('actions.otp_secrets.errors.not_activated')) unless record.active?
 
         current_user? || administrate_otp?
       end

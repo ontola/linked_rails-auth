@@ -3,10 +3,6 @@
 module LinkedRails
   module Auth
     class AccessToken < LinkedRails::Resource
-      enhance LinkedRails::Enhancements::Actionable
-      enhance LinkedRails::Enhancements::Creatable
-      enhance LinkedRails::Enhancements::Singularable
-
       attr_accessor :email, :redirect_url, :password
       alias root_relative_iri root_relative_singular_iri
 
@@ -15,10 +11,6 @@ module LinkedRails
       end
 
       class << self
-        def action_list
-          LinkedRails.access_token_action_list_class
-        end
-
         def form_class
           LinkedRails.access_token_form_class
         end

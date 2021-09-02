@@ -3,8 +3,15 @@
 module LinkedRails
   module Auth
     class ConfirmationsController < Devise::ConfirmationsController
+      include LinkedRails::Controller
+
       controller_class LinkedRails.confirmation_class
-      active_response :show, :update
+      active_response :show
+      has_singular_create_action(
+        form: -> { resource.class.try(:form_class) },
+        type: [Vocab.ontola['Create::Auth::Confirmation'], Vocab.schema.CreateAction]
+      )
+      has_singular_update_action(form: -> { nil })
 
       private
 

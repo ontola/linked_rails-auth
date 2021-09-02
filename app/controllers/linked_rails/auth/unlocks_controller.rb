@@ -4,6 +4,11 @@ module LinkedRails
   module Auth
     class UnlocksController < Devise::UnlocksController
       controller_class LinkedRails.unlock_class
+      has_singular_create_action(
+        form: -> { resource.class.try(:form_class) }
+      )
+      has_singular_update_action
+
       private
 
       def after_sending_unlock_instructions_path_for(_resource)
