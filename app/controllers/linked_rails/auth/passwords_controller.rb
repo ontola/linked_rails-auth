@@ -5,6 +5,7 @@ module LinkedRails
     class PasswordsController < Devise::PasswordsController
       skip_before_action :require_no_authentication, only: :create
 
+      controller_class LinkedRails.password_class
       private
 
       def after_sending_reset_password_instructions_path_for(_resource_name)
@@ -51,12 +52,6 @@ module LinkedRails
 
       def update_success_location
         after_resetting_password_path_for(current_resource)
-      end
-
-      class << self
-        def controller_class
-          LinkedRails.password_class
-        end
       end
     end
   end

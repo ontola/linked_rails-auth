@@ -3,6 +3,7 @@
 module LinkedRails
   module Auth
     class OtpSecretsController < LinkedRails.controller_parent_class
+      controller_class LinkedRails.otp_secret_class
       active_response :show
 
       private
@@ -28,12 +29,6 @@ module LinkedRails
         return super unless action_name == 'create'
 
         super.merge(active: true)
-      end
-
-      class << self
-        def controller_class
-          LinkedRails.otp_secret_class
-        end
       end
     end
   end

@@ -4,6 +4,8 @@ module LinkedRails
   module Auth
     class RegistrationsController < Devise::RegistrationsController
       skip_before_action :assert_is_devise_resource!, only: :show
+
+      controller_class LinkedRails.registration_class
       active_response :show
 
       private
@@ -21,12 +23,6 @@ module LinkedRails
 
       def resource_params
         params.require(permit_param_key)
-      end
-
-      class << self
-        def controller_class
-          LinkedRails.registration_class
-        end
       end
     end
   end

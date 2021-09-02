@@ -3,6 +3,7 @@
 module LinkedRails
   module Auth
     class SessionsController < ApplicationController
+      controller_class LinkedRails.session_class
       active_response :create
 
       private
@@ -43,12 +44,6 @@ module LinkedRails
 
       def r_param
         new_resource_params[:redirect_url] || (params.key?(:session) ? permit_params[:redirect_url] : nil)
-      end
-
-      class << self
-        def controller_class
-          LinkedRails.session_class
-        end
       end
     end
   end

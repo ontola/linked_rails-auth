@@ -3,6 +3,7 @@
 module LinkedRails
   module Auth
     class AccessTokensController < Doorkeeper::TokensController # rubocop:disable Metrics/ClassLength
+      controller_class LinkedRails.access_token_class
       def create
         headers.merge!(authorize_response.headers)
 
@@ -119,12 +120,6 @@ module LinkedRails
         field = [LinkedRails::Auth::Errors::WrongPassword].include?(exception.class) ? :password : :email
         token_with_errors.errors.add(field, exception.message)
         token_with_errors
-      end
-
-      class << self
-        def controller_class
-          LinkedRails.access_token_class
-        end
       end
     end
   end

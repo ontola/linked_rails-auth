@@ -3,6 +3,7 @@
 module LinkedRails
   module Auth
     class UnlocksController < Devise::UnlocksController
+      controller_class LinkedRails.unlock_class
       private
 
       def after_sending_unlock_instructions_path_for(_resource)
@@ -32,12 +33,6 @@ module LinkedRails
       def resource_params
         params.fetch(resource_name, nil) ||
           params.fetch(controller_name.singularize, {})
-      end
-
-      class << self
-        def controller_class
-          LinkedRails.unlock_class
-        end
       end
     end
   end

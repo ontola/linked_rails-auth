@@ -3,6 +3,7 @@
 module LinkedRails
   module Auth
     class ConfirmationsController < Devise::ConfirmationsController
+      controller_class LinkedRails.confirmation_class
       active_response :show, :update
 
       private
@@ -75,12 +76,6 @@ module LinkedRails
           location: after_confirmation_path_for(resource_name, current_resource!),
           notice: find_message(:confirmed)
         )
-      end
-
-      class << self
-        def controller_class
-          LinkedRails.confirmation_class
-        end
       end
     end
   end
