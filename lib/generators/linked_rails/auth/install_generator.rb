@@ -23,6 +23,7 @@ module LinkedRails
         update_user_model
         insert_doorkeeper
         create_doorkeeper_app
+        inject_controller_include
 
         readme 'README'
       end
@@ -77,16 +78,16 @@ module LinkedRails
         uncomment_lines file, 'use_refresh_token'
 
         replace_doorkeeper_line(
-          '# default_scopes  :public',
-          'default_scopes  :guest'
+          'default_scopes  :public',
+          '  default_scopes :guest'
         )
         replace_doorkeeper_line(
-          '# optional_scopes :write, :update',
-          'optional_scopes  :user'
+          'optional_scopes :write, :update',
+          '  optional_scopes :user'
         )
         replace_doorkeeper_line(
-          '# grant_flows %w[authorization_code client_credentials]',
-          'grant_flows %w[client_credentials authorization_code password]'
+          'grant_flows %w\[authorization_code client_credentials\]',
+          '  grant_flows %w[client_credentials authorization_code password]'
         )
         replace_doorkeeper_line("resource_owner_authenticator do\n(.*?)end\n", authentication, true)
       end
