@@ -22,32 +22,32 @@ module LinkedRails
         unlocks: 'linked_rails/auth/unlocks'
       }.freeze
 
-      def use_linked_rails_auth(opts = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-        linked_rails_doorkeeper_routes(opts)
-        linked_rails_device_routes(opts)
+      def use_linked_rails_auth(**opts) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        linked_rails_doorkeeper_routes(**opts)
+        linked_rails_device_routes(**opts)
 
         scope 'u' do
           get 'sign_in', to: redirect('/u/session/new')
         end
         devise_scope :user do
-          auth_resource(LinkedRails.access_token_class, opts)
-          auth_resource(LinkedRails.confirmation_class, opts)
-          auth_resource(LinkedRails.otp_attempt_class, opts)
-          auth_resource(LinkedRails.otp_secret_class, opts)
+          auth_resource(LinkedRails.access_token_class, **opts)
+          auth_resource(LinkedRails.confirmation_class, **opts)
+          auth_resource(LinkedRails.otp_attempt_class, **opts)
+          auth_resource(LinkedRails.otp_secret_class, **opts)
           linked_resource(
             LinkedRails.otp_secret_class,
             controller: opts[:otp_secrets] || LINKED_RAILS_CONTROLLERS[:otp_secrets]
           )
-          auth_resource(LinkedRails.password_class, opts)
-          auth_resource(LinkedRails.registration_class, opts)
-          auth_resource(LinkedRails.session_class, opts)
-          auth_resource(LinkedRails.unlock_class, opts)
+          auth_resource(LinkedRails.password_class, **opts)
+          auth_resource(LinkedRails.registration_class, **opts)
+          auth_resource(LinkedRails.session_class, **opts)
+          auth_resource(LinkedRails.unlock_class, **opts)
         end
       end
 
       private
 
-      def auth_resource(klass, opts)
+      def auth_resource(klass, **opts)
         key = klass.name.demodulize.tableize.to_sym
 
         singular_linked_resource(
@@ -56,7 +56,7 @@ module LinkedRails
         )
       end
 
-      def linked_rails_device_routes(opts)
+      def linked_rails_device_routes(**opts)
         devise_for(
           opts[:devise_scope] || :users,
           path: :u,
@@ -67,7 +67,7 @@ module LinkedRails
         )
       end
 
-      def linked_rails_doorkeeper_routes(opts)
+      def linked_rails_doorkeeper_routes(**opts)
         use_doorkeeper do
           DOORKEEPER_CONTROLLERS.each do |linked_rails_key, doorkeeper_key|
             if opts.key?(linked_rails_key)

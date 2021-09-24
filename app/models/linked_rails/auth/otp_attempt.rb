@@ -3,7 +3,7 @@
 module LinkedRails
   module Auth
     class OtpAttempt < OtpBase
-      def raise_on_persisting(_opts = {})
+      def raise_on_persisting(**_opts)
         raise "#{self.class.name} should not be persisted"
       end
       ActiveRecord::Persistence.instance_methods.each do |method|
