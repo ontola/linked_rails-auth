@@ -11,10 +11,10 @@ module LinkedRails
       end
 
       def confirm!
-        owner!.confirm
+        user!.confirm
       end
 
-      delegate :confirmed?, to: :owner!
+      delegate :confirmed?, to: :user!
 
       def singular_iri_opts
         {confirmation_token: confirmation_token}
@@ -24,8 +24,8 @@ module LinkedRails
         LinkedRails.iri
       end
 
-      def owner!
-        owner || raise(ActiveRecord::RecordNotFound)
+      def user!
+        user || raise(ActiveRecord::RecordNotFound)
       end
 
       class << self
