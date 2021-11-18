@@ -43,10 +43,6 @@ module LinkedRails
       def permit_params
         params.require(:session).permit(:redirect_url, :email)
       end
-
-      def r_param
-        new_resource_params[:redirect_url] || (params.key?(:session) ? permit_params[:redirect_url] : nil)
-      end
     end
   end
 end
