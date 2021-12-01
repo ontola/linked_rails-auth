@@ -142,10 +142,13 @@ module LinkedRails
 
       def update_user_model
         file = 'app/models/user.rb'
-        no_guest = "\ndef guest?\n  false\nend"
+        user_lines = "\nhas_one :otp_secret, class_name: LinkedRails.otp_secret_class.to_s, dependent: :destroy, "\
+                     "foreign_key: :owner_id, inverse_of: :owner\n\n"\
+                     "def guest?\n  false\nend\n\n"\
+                     "def otp_active?\n  otp_secret&.active?\nend"
         inject_into_file(
           file,
-          optimize_indentation(no_guest, 2),
+          optimize_indentation(user_lines, 2),
           after: ":recoverable, :rememberable, :validatable\n",
           verbose: false
         )
