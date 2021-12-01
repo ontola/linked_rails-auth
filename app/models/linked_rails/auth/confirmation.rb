@@ -6,6 +6,10 @@ module LinkedRails
       attr_accessor :confirmation_token, :email, :user, :password_token
       alias root_relative_iri root_relative_singular_iri
 
+      validates :email,
+                allow_blank: false,
+                format: {with: RFC822::EMAIL}
+
       def anonymous_iri?
         confirmation_token.blank?
       end

@@ -4,6 +4,7 @@ require 'active_model_otp'
 require 'devise'
 require 'doorkeeper'
 require 'doorkeeper/jwt'
+require 'rfc-822'
 
 require 'linked_rails/auth/engine'
 require 'linked_rails/auth/routes'

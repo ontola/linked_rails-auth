@@ -6,6 +6,10 @@ module LinkedRails
       attr_accessor :email, :redirect_url, :password
       alias root_relative_iri root_relative_singular_iri
 
+      validates :email,
+                allow_blank: false,
+                format: {with: RFC822::EMAIL}
+
       def singular_iri_opts
         {redirect_url: redirect_url}
       end

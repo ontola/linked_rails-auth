@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'doorkeeper-jwt'
   spec.add_dependency 'jwt'
   spec.add_dependency 'rails'
+  spec.add_dependency 'rfc-822'
   spec.add_dependency 'rqrcode'
 
   spec.add_development_dependency 'rubocop'

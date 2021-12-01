@@ -6,6 +6,10 @@ module LinkedRails
       attr_accessor :email, :password, :password_confirmation, :user, :reset_password_token
       alias root_relative_iri root_relative_singular_iri
 
+      validates :email,
+                allow_blank: false,
+                format: {with: RFC822::EMAIL}
+
       def singular_iri_opts
         {reset_password_token: reset_password_token}
       end
