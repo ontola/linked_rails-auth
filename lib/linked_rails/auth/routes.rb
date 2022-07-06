@@ -23,7 +23,18 @@ module LinkedRails
       }.freeze
 
       def use_linked_rails_auth(**opts) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        use_linked_rails_oauth(**opts)
+        use_linked_rails_user(**opts)
+      end
+
+      def use_linked_rails_oauth(**opts)
+        namespace :oauth do
+          register_client_route(controller: 'clients')
+        end
         linked_rails_doorkeeper_routes(**opts)
+      end
+
+      def use_linked_rails_user(**opts)
         linked_rails_device_routes(**opts)
 
         scope 'u' do
@@ -43,6 +54,12 @@ module LinkedRails
           auth_resource(LinkedRails.session_class, **opts)
           auth_resource(LinkedRails.unlock_class, **opts)
         end
+      end
+
+      def register_client_route(controller: 'linked_rails/auth/clients', route_name: :register_service_client)
+        post 'register',
+             as: route_name,
+             to: "#{controller}#create"
       end
 
       private

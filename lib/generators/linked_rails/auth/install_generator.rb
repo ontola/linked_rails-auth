@@ -13,6 +13,7 @@ module LinkedRails
       def install # rubocop:disable Metrics/MethodLength
         template 'doorkeeper_jwt_initializer.rb', 'config/initializers/doorkeeper_jwt.rb'
         template 'locales.yml', 'config/locales/linked_rails_auth.en.yml'
+        route 'register_client_route'
         route 'use_linked_rails_auth'
 
         migration_template(
